@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'comparator_section.dart';
+import 'help_section.dart';
+import 'mortgage_by_bank_section.dart';
 
 void main() => runApp(MyApp());
 
@@ -6,67 +9,74 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Startup Name Generator',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('BANXICO'),
-          backgroundColor: Colors.indigo[900],
-        ),
-        body: ListView(
-          children: <Destinos>[
-            Destinos('COMPRAR CASA', Colors.yellow[900]),
-            Destinos('COMPRAR TERRENO', Colors.blue[900]),
-            Destinos('CONSTRUIR', Colors.green[900]),
-            Destinos('REMODELAR', Colors.orange[900]),
-            Destinos('CAMBIAR HIPOTECA', Colors.teal[900]),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet),
-              title: Text('Destinos'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.assessment),
-              title: Text('Comparativo'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance),
-              title: Text('Bancos'),
-            ),
-          ],
-          currentIndex: 0,
-          selectedItemColor: Colors.indigo[900],
-        ),
+      debugShowCheckedModeBanner: false,
+      title: 'BANCO DE MÉXICO',
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Color(0xFF182C47),
+        accentColor: Color(0xFF58A2C0),
+        fontFamily: 'Montserrat',
       ),
+      home: MainScreen(),
     );
   }
 }
 
-class Destinos extends StatelessWidget {
-  final String _title;
-  final Color _color;
-  final _biggerFont = const TextStyle(
-    fontSize: 22.0,
-    fontFamily: 'Montserrat',
-    color: Colors.white,
-  );
-  
-  Destinos(this._title, this._color);
-  
+class MainScreen extends StatefulWidget {
+  MainScreen({Key key}) : super(key: key);
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+
+  int _selectedSection = 1;
+  double _appBarElevation = 0.0;
+
+  void _onSectionSelected(int index) {
+    setState(() {
+      _selectedSection = index;
+      _appBarElevation = index == 1 ? 0.0 : 4.0;
+    });
+  }
+
+  List<Widget> _sections = <Widget>[
+    MortgageByBank(),
+    ComparatorSection(),
+    HelpSection(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: _color,
-      height: 200.0,
-      width: double.infinity,
-      margin: const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(10.0),
-      alignment: Alignment.center,
-      child: Text(
-        _title,
-        style: _biggerFont,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'BANCO DE MÉXICO',
+        ),
+        centerTitle: true,
+        elevation: _appBarElevation,
+      ),
+      body: Center(
+        child: _sections.elementAt(_selectedSection),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance),
+            title: Text('Bancos'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assessment),
+            title: Text('Comparador'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.help),
+            title: Text('Ayuda'),
+          ),
+        ],
+        currentIndex: _selectedSection,
+        onTap: _onSectionSelected,
       ),
     );
   }
