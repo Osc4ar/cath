@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'comparator_section.dart';
 import 'help_section.dart';
-import 'mortgage_by_bank_section.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,7 +41,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _sections = <Widget>[
-    MortgageByBank(),
     ComparatorSection(),
     HelpSection(),
   ];
@@ -62,10 +60,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance),
-            title: Text('Bancos'),
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assessment),
             title: Text('Comparador'),

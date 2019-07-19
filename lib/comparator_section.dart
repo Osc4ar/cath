@@ -6,10 +6,34 @@ class ComparatorSection extends StatefulWidget {
   ComparatorSection({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ComparatorSectionState();
+  State<StatefulWidget> createState() => ComparatorSectionState();
 }
 
-class _ComparatorSectionState extends State<ComparatorSection> {
+class ComparatorSectionState extends State<ComparatorSection> {
+
+  int _selectedSection = 0;
+  int _destino = 0;
+  int _ingresos;
+
+  List<Widget> _steps = <Widget>[
+    
+  ];
+
+  List<String> destinos = [
+    'COMPRAR CASA',
+    'COMPRAR TERRENO',
+    'CONSTRUIR',
+    'REMODELAR',
+    'CAMBIAR HIPOTECA',
+  ];
+
+  moveToIngresos(String title) {
+    setState(() {
+      _destino = destinos.indexOf(title);
+      _selectedSection = 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,11 +48,22 @@ class _ComparatorSectionState extends State<ComparatorSection> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    DestinosButton('COMPRAR CASA', () {}),
-                    DestinosButton('COMPRAR TERRENO', () {}),
-                    DestinosButton('CONSTRUIR', () {}),
-                    DestinosButton('REMODELAR', () {}),
-                    DestinosButton('CAMBIAR HIPOTECA', () {}),
+                    DestinosButton(destinos[0], moveToIngresos),
+                    DestinosButton(destinos[1], moveToIngresos),
+                    DestinosButton(destinos[2], moveToIngresos),
+                    DestinosButton(destinos[3], moveToIngresos),
+                    DestinosButton(destinos[4], moveToIngresos),
+                    //Text('Destino: $_destino'),
+                    //Text('Sección: $_selectedSection'),
+                    /*Container(
+                      padding: EdgeInsets.all(12.0),
+                      width: 300.0,
+                      child: Text(
+                        '*La información relativa a comisiones que se mostrará en los cuadros corresponde a la proporcionada al Banco de México, por las Entidades Financieras Reguladas. Por lo tanto, este Instituto Central no se responsabiliza de la veracidad y/o actualización de la misma.',
+                        style: TextStyle(fontSize: 10,),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),*/
                   ],
                 ),
               ],
