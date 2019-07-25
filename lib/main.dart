@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'comparator_section.dart';
 import 'help_section.dart';
+import 'search_screen.dart';
+import 'table_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,6 +19,10 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
       ),
       home: MainScreen(),
+      routes: {
+        SearchScreen.routeName: (context) => SearchScreen(),
+        TableScreen.routeName: (context) => TableScreen(),
+      },
     );
   }
 }
@@ -30,13 +36,13 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
 
-  int _selectedSection = 1;
+  int _selectedSection = 0;
   double _appBarElevation = 0.0;
 
   void _onSectionSelected(int index) {
     setState(() {
       _selectedSection = index;
-      _appBarElevation = index == 1 ? 0.0 : 4.0;
+      _appBarElevation = index == 0 ? 0.0 : 4.0;
     });
   }
 

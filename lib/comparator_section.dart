@@ -1,6 +1,7 @@
+import 'package:cath/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'app_header.dart';
-import 'destinos_button.dart';
+import 'user_data_for_search.dart';
 
 class ComparatorSection extends StatefulWidget {
   ComparatorSection({Key key}) : super(key: key);
@@ -11,15 +12,12 @@ class ComparatorSection extends StatefulWidget {
 
 class ComparatorSectionState extends State<ComparatorSection> {
 
-  int _selectedSection = 0;
-  int _destino = 0;
-  int _ingresos;
+  int currentStep = 0;
+  List<int> _destino = [0];
+  List<int> _ingresos = [0];
+  List<int> _plazo = [0];
 
-  List<Widget> _steps = <Widget>[
-    
-  ];
-
-  List<String> destinos = [
+  List<String> destinosTitles = [
     'COMPRAR CASA',
     'COMPRAR TERRENO',
     'CONSTRUIR',
@@ -27,50 +25,117 @@ class ComparatorSectionState extends State<ComparatorSection> {
     'CAMBIAR HIPOTECA',
   ];
 
-  moveToIngresos(String title) {
-    setState(() {
-      _destino = destinos.indexOf(title);
-      _selectedSection = 1;
-    });
+  List<String> ingresosTitles = [
+    'Menos de \$10,000',
+    'Entre \$10,000 y \$20,000',
+    'Entre \$20,000 y \$30,000',
+    'Más de \$30,000',
+  ];
+
+  List<String> plazosTitles = [
+    '5 años',
+    '7 años',
+    '10 años',
+    '15 años',
+    '20 años',
+  ];
+
+  Widget _buildRadioListTile(BuildContext context, int index, String title, List<int> groupValue) {
+    return RadioListTile<int>(
+      title: Text(title),
+      value: index,
+      groupValue: groupValue[0],
+      onChanged: (int value) {
+        setState(() {
+          groupValue[0] = value;
+        });
+      },
+    );
   }
 
+  List<Widget> _buildRadioList(BuildContext context, List<String> titles, List<int> groupValue) {
+    List<Widget> radioList = new List();
+    for (int i = 0; i < titles.length; i++)
+      radioList.add(_buildRadioListTile(context, i, titles[i], groupValue));
+    return radioList;
+  }
+
+  List<Step> getSteps(BuildContext context) {
+    return [
+      Step(
+        title: Text('Destino'),
+        //subtitle: Text('Uso del crédito'),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: _buildRadioList(context, destinosTitles, _destino),
+        ),
+        isActive: true,
+      ),
+      Step(
+        title: Text('Plazo'),
+        //subtitle: Text('Tiempo para pagar crédito'),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: _buildRadioList(context, plazosTitles, _plazo),
+        ),
+        isActive: true,
+      ),
+      Step(
+        title: Text('Ingresos'),
+        //subtitle: Text('Ingresos mensuales'),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: _buildRadioList(context, ingresosTitles, _ingresos),
+        ),
+        isActive: true,
+      ),
+    ];
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          AppHeader('COMPARADOR CRÉDITOS HIPOTECARIOS', Color(0xFF182C47)),
-          Container(
-            margin: EdgeInsets.only(top: 30.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    DestinosButton(destinos[0], moveToIngresos),
-                    DestinosButton(destinos[1], moveToIngresos),
-                    DestinosButton(destinos[2], moveToIngresos),
-                    DestinosButton(destinos[3], moveToIngresos),
-                    DestinosButton(destinos[4], moveToIngresos),
-                    //Text('Destino: $_destino'),
-                    //Text('Sección: $_selectedSection'),
-                    /*Container(
-                      padding: EdgeInsets.all(12.0),
-                      width: 300.0,
-                      child: Text(
-                        '*La información relativa a comisiones que se mostrará en los cuadros corresponde a la proporcionada al Banco de México, por las Entidades Financieras Reguladas. Por lo tanto, este Instituto Central no se responsabiliza de la veracidad y/o actualización de la misma.',
-                        style: TextStyle(fontSize: 10,),
-                        textAlign: TextAlign.justify,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        AppHeader('COMPARADOR CRÉDITOS HIPOTECARIOS', Color(0xFF182C47)),
+        Container(
+          height: 445,
+          child: Stepper(
+              type: StepperType.horizontal,
+              currentStep: currentStep,
+              onStepTapped: (index) {
+                setState(() {
+                  currentStep = index;
+                });
+              },
+              onStepCancel: () {
+                setState(() {
+                  if (currentStep > 0)
+                    currentStep--;
+                });
+              },
+              onStepContinue: () {
+                setState(() {
+                  if (currentStep < 2)
+                    currentStep++;
+                  else {
+                    Navigator.pushNamed(
+                      context,
+                      SearchScreen.routeName,
+                      arguments: UserDataForSearch(
+                        _destino[0],
+                        _ingresos[0],
+                        _plazo[0],
                       ),
-                    ),*/
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+                    );
+                  }
+                });
+              },
+              steps: getSteps(context),
+              ),
+        )
+      ],
     );
   }
 }
